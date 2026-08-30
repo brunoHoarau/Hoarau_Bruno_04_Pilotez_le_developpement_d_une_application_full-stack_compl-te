@@ -73,7 +73,7 @@ export class FilesService {
     }
 
   async findByUser(userId: number) {
-    return this.fileRepository.find({
+    const files = await this.fileRepository.find({
       where: {
         userId,
       },
@@ -81,6 +81,16 @@ export class FilesService {
         createdAt: 'DESC',
       },
     });
+
+    return files.map((file) => ({
+      id: file.id,
+      originalName: file.originalName,
+      mimetype: file.mimetype,
+      token: file.token,
+      expiresAt: file.expiresAt,
+      requiresPassword: !!file.passwordHash,
+      physicalDeletedAt: file.physicalDeletedAt,
+    }));
   }
 
   async findOneByToken(token: string) {

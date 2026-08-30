@@ -73,6 +73,44 @@ describe('FilesService', () => {
     });
   });
 
+  describe('findByUser', () => {
+    it('returns only the safe fields, mapping passwordHash to requiresPassword', async () => {
+      const expiresAt = new Date(Date.now() + 60_000);
+      const physicalDeletedAt = null;
+      repository.find.mockResolvedValue([
+        {
+          id: 'uuid-1',
+          originalName: 'document.pdf',
+          mimetype: 'application/pdf',
+          token: 'a-token',
+          expiresAt,
+          physicalDeletedAt,
+          passwordHash: 'some-hash',
+          storagePath: '/uploads/stored-name.pdf',
+          filename: 'stored-name.pdf',
+          size: 1234,
+          userId: 1,
+        },
+      ]);
+
+      const files = await service.findByUser(1);
+
+      expect(files).toEqual([
+        {
+          id: 'uuid-1',
+          originalName: 'document.pdf',
+          mimetype: 'application/pdf',
+          token: 'a-token',
+          expiresAt,
+          requiresPassword: true,
+          physicalDeletedAt,
+        },
+      ]);
+      expect(files[0]).not.toHaveProperty('passwordHash');
+      expect(files[0]).not.toHaveProperty('storagePath');
+    });
+  });
+
   describe('getDownloadInfo', () => {
     it('returns safe metadata without the password hash', async () => {
       repository.findOne.mockResolvedValue({
