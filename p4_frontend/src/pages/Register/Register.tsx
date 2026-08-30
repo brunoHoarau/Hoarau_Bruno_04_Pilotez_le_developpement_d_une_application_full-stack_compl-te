@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import Button from "../../components/button/Button";
-import Field from "../../components/Field/Field";
+import Field from "../../components/Input/Input";
 import { DivLink, RegisterBox, RegisterContainer, RegisterForm} from "./Register.styles";
 import { useState } from "react";
-import { createUser } from "./RegisterFunction";
+import { createUser } from "../../api/RegisterFunction";
 
 
 function Register() {

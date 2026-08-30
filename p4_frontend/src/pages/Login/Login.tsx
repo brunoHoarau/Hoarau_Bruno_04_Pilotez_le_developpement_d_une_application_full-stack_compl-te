@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../../components/button/Button";
-import Field from "../../components/Field/Field";
+import Field from "../../components/Input/Input";
 import { DivErrors, DivLink, LoginBox, LoginContainer, LoginForm} from "./Login.styles";
 import { useState } from "react";
-import { login } from "./LoginFunction";
+import { login } from "../../api/LoginFunction";
+import { useAuth } from "../../routes/AuthContext";
 
 
 function Login() {
+    const { setAuthenticated } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -31,7 +33,7 @@ function Login() {
         // Mot de passe
         if (!password) {
             newErrors.password = "Le mot de passe est obligatoire.";
-        } else if (password.length < 6) {
+        } else if (password.length < 8) {
             newErrors.password = "Veuillez saisir votre mot de passe.";
         }
 
@@ -47,10 +49,9 @@ function Login() {
         try {
             const response = await login(email,password);
 
-            console.log(response)
-
             // redirection
             if (response) {
+                setAuthenticated(true);
                 navigate('/myspace');
             }
         }catch (error) {
@@ -61,6 +62,8 @@ function Login() {
        
             console.log(errors.message ? errors.message : "" )
         }
+
+
     }
 
     return(

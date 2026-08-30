@@ -40,6 +40,7 @@ export const TeleverseBackground = styled.div`
     background-color: black;
     color: white;
 `;
+
 export const TeleverseImg = styled.img`
     height: 48px;
     width: 48px;

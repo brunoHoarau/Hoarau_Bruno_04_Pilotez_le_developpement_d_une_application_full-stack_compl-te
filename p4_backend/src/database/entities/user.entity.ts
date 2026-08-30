@@ -4,7 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { FileEntity } from './file.entity';
 
 @Entity() // Décorateur pour indiquer que cette classe est une entité TypeORM
 export class User {
@@ -25,4 +27,7 @@ export class User {
 
   @UpdateDateColumn() // Date de mise à jour automatique
   updatedAt?: Date;
+
+  @OneToMany(() => FileEntity, (file) => file.user)
+  files!: FileEntity[];
 }

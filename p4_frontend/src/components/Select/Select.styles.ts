@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 
-export const FieldContainer = styled.div`
+export const SelectContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: baseline;
@@ -24,7 +24,7 @@ export const FieldContainer = styled.div`
 
     `;
 
-export const FieldInput = styled.input`
+export const SelectField = styled.select<{classCss?: string}>`
     width: stretch;
     align-items:center;
     padding: 12px;
@@ -35,6 +35,5 @@ export const FieldInput = styled.input`
     font-size: 16px;
     line-height: 24px;
     letter-spacing: 0%;
-
 
 `;

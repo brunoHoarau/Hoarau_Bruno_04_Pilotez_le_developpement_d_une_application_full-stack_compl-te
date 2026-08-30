@@ -29,15 +29,16 @@ export class AuthController {
         const { access_token } = await this.authService.login(loginDto);
 
         res.cookie('access_token', access_token, {
-        httpOnly: true,
-        secure: false, // true en production avec HTTPS
-        sameSite: 'lax',
-        maxAge: 60 * 60 * 1000, // 1 heure
-        path: '/',
+            httpOnly: true,
+            secure: false, // true en production avec HTTPS
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 1000, // 1 heure
+            path: '/',
         });
 
         return {
-        message: 'Connexion réussie',
+            status: 200,
+            message: 'Connexion réussie',
         };
     }
 
@@ -58,6 +59,7 @@ export class AuthController {
     });
 
     return {
+        status: 204,
         message: 'Déconnexion réussie',
     };
     }

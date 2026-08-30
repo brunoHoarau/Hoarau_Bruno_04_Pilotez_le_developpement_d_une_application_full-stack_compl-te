@@ -1,9 +1,9 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const createUser = async (
+export async function createUser (
   email: string,
   password: string
-) => {
+) {
   const response = await fetch(`${API_URL}/users`, {
     method: "POST",
     headers: {

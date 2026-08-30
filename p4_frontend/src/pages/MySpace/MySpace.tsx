@@ -11,4 +11,4 @@ function MySpace()  {
     )
 }
 
-export default MySpace
+export default MySpace;

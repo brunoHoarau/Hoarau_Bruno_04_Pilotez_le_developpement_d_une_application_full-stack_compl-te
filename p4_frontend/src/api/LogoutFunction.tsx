@@ -1,21 +1,14 @@
 const API_URL = import.meta.env.VITE_API_URL ;
 
-export async function login(
-  email: string,
-  password: string,
-) {
+export async function logout() {
     console.log(import.meta.env);
-  const response = await fetch( `${API_URL}/auth/login`,
+  const response = await fetch( `${API_URL}/auth/logout`,
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body: JSON.stringify({
-        email,
-        password,
-      }),
     },
   );
 
@@ -28,5 +21,6 @@ export async function login(
     );
   }
 
+  console.log(data)
   return data;
 }

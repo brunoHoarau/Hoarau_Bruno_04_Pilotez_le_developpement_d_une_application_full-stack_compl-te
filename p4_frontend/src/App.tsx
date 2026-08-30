@@ -7,6 +7,7 @@ import Home from './pages/Home/Home'
 import MySpace from './pages/MySpace/MySpace'
 import GuestRoute from './routes/GuestRoute'
 import PrivateRoute from './routes/PrivateRoute'
+import Upload from './pages/Upload/Upload'
 
 function App() {
 
@@ -21,7 +22,9 @@ function App() {
             </Route>
 
             <Route element={<PrivateRoute />}>
+                <Route path="/home" element={ <Home /> } />
                 <Route path='/myspace' element={ <MySpace /> } />
+                <Route path='/upload' element={ <Upload /> } />
             </Route>
         </Routes>
     </>
