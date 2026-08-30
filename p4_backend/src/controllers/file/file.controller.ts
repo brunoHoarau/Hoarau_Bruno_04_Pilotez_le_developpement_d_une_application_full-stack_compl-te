@@ -12,6 +12,7 @@ import {
   MaxFileSizeValidator,
   Body,
   BadRequestException,
+  HttpException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { Response } from 'express';
@@ -139,21 +140,35 @@ export class FilesController {
     @Body('password') password: string | undefined,
     @Res() res: Response,
   ) {
-    const file = await this.filesService.verifyDownload(token, password);
+    try{
 
-    res.set({
-      'Content-Type': file.mimetype,
-      'Content-Disposition': `attachment; filename="${encodeURIComponent(file.originalName)}"`,
-    });
-
-    const stream = fs.createReadStream(file.storagePath);
-
-    stream.on('error', () => {
-      if (!res.headersSent) {
-        res.status(404).json({ message: 'Fichier introuvable' });
+      const file = await this.filesService.verifyDownload(token, password);
+      
+      res.set({
+        'Content-Type': file.mimetype,
+        'Content-Disposition': `attachment; filename="${encodeURIComponent(file.originalName)}"`,
+      });
+      
+      const stream = fs.createReadStream(file.storagePath);
+      
+      stream.on('error', () => {
+        if (!res.headersSent) {
+          res.status(404).json({ message: 'Fichier introuvable' });
+        }
+      });
+      
+      stream.pipe(res);
+    } catch(error){
+        if (error instanceof HttpException) {
+        return res.status(error.getStatus()).json({
+          message: error.message,
+        });
       }
-    });
+    }
 
-    stream.pipe(res);
+    return res.status(500).json({
+      message: 'Une erreur est survenue lors du téléchargement',
+    })
+
   }
 }
