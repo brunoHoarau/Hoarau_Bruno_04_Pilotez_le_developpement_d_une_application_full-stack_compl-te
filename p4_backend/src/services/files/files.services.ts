@@ -1,9 +1,12 @@
-import { BadRequestException, GoneException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, GoneException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileEntity } from '../../database/entities/file.entity';
 import { Repository } from 'typeorm';
 import { randomBytes } from 'crypto';
+import * as bcrypt from 'bcrypt';
 import * as fs from 'fs/promises';
+
+const MIN_PASSWORD_LENGTH = 6;
 
 @Injectable()
 export class FilesService {
@@ -12,7 +15,12 @@ export class FilesService {
         private readonly fileRepository: Repository<FileEntity>,
     ) {}
 
-    async upload(file: any, userId: number, expirationDays = 7) {
+    async upload(
+        file: any,
+        userId: number,
+        expirationDays = 7,
+        password?: string,
+    ) {
         if (
             !Number.isInteger(expirationDays) ||
             expirationDays < 1 ||
@@ -22,6 +30,16 @@ export class FilesService {
             'La durée doit être comprise entre 1 et 7 jours.',
             );
         }
+
+        if (password && password.length < MIN_PASSWORD_LENGTH) {
+            throw new BadRequestException(
+            `Le mot de passe doit contenir au moins ${MIN_PASSWORD_LENGTH} caractères.`,
+            );
+        }
+
+        const passwordHash = password
+            ? await bcrypt.hash(password, 10)
+            : null;
 
         const token = randomBytes(32).toString('hex');
 
@@ -35,6 +53,7 @@ export class FilesService {
         mimetype: file.mimetype,
         size: file.size,
         storagePath: file.path,
+        passwordHash,
         expiresAt,
         userId,
         });
@@ -77,6 +96,39 @@ export class FilesService {
         throw new GoneException(
             'Le lien de téléchargement a expiré.',
         );
+    }
+
+    return file;
+  }
+
+  async getDownloadInfo(token: string) {
+    const file = await this.findOneByToken(token);
+
+    return {
+      originalName: file.originalName,
+      mimetype: file.mimetype,
+      size: file.size,
+      expiresAt: file.expiresAt,
+      requiresPassword: !!file.passwordHash,
+    };
+  }
+
+  async verifyDownload(token: string, password?: string) {
+    const file = await this.findOneByToken(token);
+
+    if (file.passwordHash) {
+      if (!password) {
+        throw new UnauthorizedException('Mot de passe requis');
+      }
+
+      const isPasswordValid = await bcrypt.compare(
+        password,
+        file.passwordHash,
+      );
+
+      if (!isPasswordValid) {
+        throw new UnauthorizedException('Mot de passe invalide');
+      }
     }
 
     return file;

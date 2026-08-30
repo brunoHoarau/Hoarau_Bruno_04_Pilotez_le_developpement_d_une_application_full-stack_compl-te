@@ -6,18 +6,22 @@ import {
   UseGuards,
   UseInterceptors,
   Req,
+  Res,
+  Param,
   ParseFilePipe,
   MaxFileSizeValidator,
   Body,
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import type { Response } from 'express';
 
 import { FilesService } from '../../services/files/files.services';
 import { JwtAuthGuard } from '../../common/guards/jwt.guard';
 import path from 'path';
 import { diskStorage } from 'multer';
 import { randomBytes } from 'crypto';
+import * as fs from 'fs';
 
 const forbiddenExtensions = [
     ".exe",
@@ -42,13 +46,13 @@ const forbiddenExtensions = [
 const MAX_FILE_SIZE =  1 * 1024 * 1024 * 1024;
 
 @Controller('files')
-@UseGuards(JwtAuthGuard)
 export class FilesController {
   constructor(
     private readonly filesService: FilesService,
   ) {}
 
   @Post('upload')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('file', {
         storage: diskStorage({
@@ -97,6 +101,8 @@ export class FilesController {
     @Req() req: any,
 
     @Body('expirationDays') expirationDays?: string,
+
+    @Body('password') password?: string,
   ) {
 
     if (!file) {
@@ -112,11 +118,42 @@ export class FilesController {
       file,
       req.user.userId,
       expiration,
+      password,
     );
   }
 
   @Get('my-files')
+  @UseGuards(JwtAuthGuard)
   getMyFiles(@Req() req: any) {
     return this.filesService.findByUser(req.user.userId);
+  }
+
+  @Get('download/:token')
+  getDownloadInfo(@Param('token') token: string) {
+    return this.filesService.getDownloadInfo(token);
+  }
+
+  @Post('download/:token')
+  async downloadFile(
+    @Param('token') token: string,
+    @Body('password') password: string | undefined,
+    @Res() res: Response,
+  ) {
+    const file = await this.filesService.verifyDownload(token, password);
+
+    res.set({
+      'Content-Type': file.mimetype,
+      'Content-Disposition': `attachment; filename="${encodeURIComponent(file.originalName)}"`,
+    });
+
+    const stream = fs.createReadStream(file.storagePath);
+
+    stream.on('error', () => {
+      if (!res.headersSent) {
+        res.status(404).json({ message: 'Fichier introuvable' });
+      }
+    });
+
+    stream.pipe(res);
   }
 }
