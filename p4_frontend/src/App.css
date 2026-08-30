@@ -1,0 +1,51 @@
+
+.upload-container{
+  width: 393px;
+  height: 414px;
+  background-color: white;
+  opacity: 1;
+  gap: 24px;
+  padding: 24px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  box-shadow: 0px 0px 12px 0px #00000040;
+}
+
+.custom-button{
+  width: stretch;
+    align-items:center;
+    padding: 12px;
+    border-radius: 8px;
+
+    & >img{
+        height: 12px;
+        margin-right: 0.25rem;
+    }
+}
+
+.error{
+  color: red;
+}
+
+.btn-disabled{
+  background: #B7A79C33;
+  border: 1px solid #B7A79C33
+}
+
+#btn-burger {
+        background-color: transparent;
+    }
+
+#Sidebar-right{
+    display: flex;
+    gap: 10px;
+}
+
+#btn-logout{
+  display: flex;
+  background-color: transparent;
+}
+#btn-logout > img{
+  height: inherit;
+  max-height: 21px;
+}

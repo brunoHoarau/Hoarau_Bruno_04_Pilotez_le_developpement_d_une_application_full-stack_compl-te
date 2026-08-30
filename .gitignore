@@ -1,5 +1,21 @@
 p4_backend/node_modules
 p4_backend/.prettierrc
+ HEAD
 
 .superpowers
+
+p4_backend/dist
+p4_backend/.env
+p4_backend/.claude
+p4_backend/docs/
+p4_backend/docs/
+
+p4_frontend/node_modules
+p4_frontend/.prettierrc
+p4_frontend/dist
+p4_frontend/.env
+./superpowers
+
+/.superpowers
+ dev
 node_modules

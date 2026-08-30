@@ -1,98 +1,179 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# P4 Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API backend construite avec [NestJS](https://nestjs.com/), [TypeORM](https://typeorm.io/) et [PostgreSQL](https://www.postgresql.org/), fournissant l'inscription, l'authentification (JWT) et la gestion des utilisateurs.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Stack technique
 
-## Description
+- **NestJS 11** (Express)
+- **TypeORM** + **PostgreSQL** (`pg`)
+- **Passport JWT** (`@nestjs/passport`, `passport-jwt`) pour l'authentification
+- **class-validator** pour la validation des DTO
+- **bcrypt** pour le hachage des mots de passe
+- **Jest** pour les tests
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Prérequis
 
-## Project setup
+- [Node.js](https://nodejs.org/) 18+ et npm
+- [Docker](https://www.docker.com/) + Docker Compose (pour PostgreSQL)
+- Git
+
+## Démarrage rapide (depuis un `git clone`)
 
 ```bash
-$ npm install
+# 1. Cloner le dépôt
+git clone <url-du-depot>
+cd <nom-du-dossier>/p4_backend
+
+# 2. Installer les dépendances
+npm install
+
+# 3. Configurer les variables d'environnement
+cp .env.example .env
+# éditer .env si besoin (voir section Configuration)
+
+# 4. Démarrer PostgreSQL (docker-compose.yml à la racine du dépôt, au-dessus de p4_backend)
+docker compose -f ../docker-compose.yml up -d
+
+# 5. Lancer l'API en mode développement (les migrations s'appliquent automatiquement au démarrage)
+npm run start:dev
+
+# 6. Créer un compte (la base démarre vide)
+curl -X POST http://localhost:3000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"you@example.com","password":"password123","name":"You"}'
 ```
 
-## Compile and run the project
+L'API est alors disponible sur `http://localhost:3000`.
+
+## Configuration
+
+Les variables d'environnement sont chargées depuis un fichier `.env` (non versionné). Un modèle est fourni dans `.env.example` :
+
+```env
+DATABASE_URL="postgresql://admin:secret123@localhost:5432/mydatabase"
+JWT_SECRET=change_this_dev_secret
+NODE_ENV=development
+PORT=3000
+```
+
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | Chaîne de connexion PostgreSQL, doit correspondre aux identifiants de `docker-compose.yml` |
+| `JWT_SECRET` | Secret utilisé pour signer/vérifier les tokens JWT |
+| `NODE_ENV` | Environnement (`development` ou `production`) |
+| `PORT` | Port d'écoute de l'API (défaut `3000`) |
+
+## Base de données
+
+Le `docker-compose.yml` (à la racine du dépôt) démarre PostgreSQL et pgAdmin :
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+docker compose -f ../docker-compose.yml up -d
 ```
 
-## Run tests
+- PostgreSQL : `localhost:5432` (db `mydatabase`, user `admin`, password `secret123`)
+- pgAdmin : http://localhost:5050 (`admin@example.com` / `admin123`)
+
+Le schéma est géré par des migrations TypeORM versionnées (`src/database/migrations/`), appliquées automatiquement au démarrage de l'application (`migrationsRun: true`) — `synchronize` est désactivé, y compris en développement.
+
+La base démarre **vide** : il n'y a pas de compte pré-créé. Le premier utilisateur crée son compte via `POST /auth/register`.
+
+Commandes disponibles pour gérer les migrations :
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run migration:generate -- src/database/migrations/<NomDeLaMigration>  # génère une migration depuis les entités
+npm run migration:run                                                     # applique les migrations en attente
+npm run migration:revert                                                  # annule la dernière migration appliquée
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Scripts disponibles
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run start          # démarrage simple
+npm run start:dev      # démarrage en mode watch (recommandé en dev)
+npm run start:debug    # démarrage avec debugger + watch
+npm run build           # compilation TypeScript -> dist/
+npm run start:prod      # exécute le build compilé (dist/main.js)
+
+npm run test            # tests unitaires
+npm run test:watch      # tests unitaires en mode watch
+npm run test:cov        # couverture de tests
+npm run test:e2e        # tests end-to-end
+
+npm run lint            # ESLint (--fix)
+npm run format          # Prettier sur src/ et test/
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Routes de l'API
 
-## Resources
+Aucun préfixe global n'est configuré : les routes sont exposées telles que listées ci-dessous.
 
-Check out a few resources that may come in handy when working with NestJS:
+### Auth (`/auth`)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+| Méthode | Route | Auth | Body |
+|---|---|---|---|
+| POST | `/auth/register` | non | `RegisterDto` (`email`, `password` ≥ 8 car., `name`, `role?`) |
+| POST | `/auth/login` | non | `LoginDto` (`email`, `password`) |
+| POST | `/auth/logout` | non | — |
 
-## Support
+`POST /auth/login` ne renvoie pas le token dans le corps de la réponse : il pose un cookie **httpOnly** `access_token` (`sameSite: lax`, expire après 1h) et renvoie `{ message: 'Connexion réussie' }`. Les routes protégées lisent ce cookie via `JwtStrategy` — il n'y a pas de support du header `Authorization: Bearer <token>`.
+`POST /auth/logout` efface le cookie `access_token` (`res.clearCookie`, mêmes options `httpOnly`/`sameSite: lax`/`path: '/'`) et renvoie `{ message: 'Déconnexion réussie' }`.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Users (`/users`)
 
-## Stay in touch
+| Méthode | Route | Auth | Body / Params |
+|---|---|---|---|
+| POST | `/users` | non | `CreateUserDto` |
+| GET | `/users/:id` | JWT | `id` |
+| PUT | `/users/:id` | JWT | `id` + `UpdateUserDto` |
+| DELETE | `/users/:id` | JWT | `id` |
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Exemples curl
 
-## License
+Le token étant posé dans un cookie httpOnly, il faut demander à `curl` de le conserver (`-c`) puis de le renvoyer (`-b`) pour appeler une route protégée :
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```bash
+# Inscription
+curl -X POST http://localhost:3000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"password123","name":"Test"}'
+
+# Connexion — sauvegarde le cookie access_token dans cookies.txt
+curl -i -c cookies.txt -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"password123"}'
+
+# Route protégée — renvoie le cookie sauvegardé
+curl -b cookies.txt http://localhost:3000/users/1
+```
+
+## Points d'attention connus
+
+- **`GET/PUT/DELETE /users/:id` ne sont pas implémentés** : `UsersService.findOneById`, `update` et `remove` lèvent actuellement `Error('Method not implemented.')`.
+- **Validation des DTO non activée globalement** : aucun `app.useGlobalPipes(new ValidationPipe())` n'est présent dans `main.ts`, donc les décorateurs `class-validator` des DTO ne sont pas appliqués tant que ce pipe n'est pas enregistré.
+- `POST /users` et `POST /auth/register` font tous les deux de la création de compte sans authentification — à clarifier si un seul doit rester le point d'entrée d'inscription.
+
+## Structure du projet
+
+```
+src/
+├── common/
+│   ├── filters/          # HttpExceptionFilter
+│   └── guards/           # JwtAuthGuard
+├── controllers/          # AuthController, UsersController
+├── database/
+│   ├── data-source.ts     # DataSource TypeORM partagée (CLI + app)
+│   ├── entities/          # User
+│   └── migrations/        # Migrations versionnées
+├── dto/
+│   ├── auth/              # RegisterDto, LoginDto
+│   └── users/             # CreateUserDto, UpdateUserDto
+├── services/              # AuthService, UsersService
+├── strategies/            # JwtStrategy
+├── app.module.ts
+└── main.ts
+```
+
+## Licence
+
+UNLICENSED (projet privé).
