@@ -9,7 +9,7 @@ export const DownloadContainer = styled.div`
     margin: 0 24px;
 `;
 
-export const ContainerBox = styled.div`
+export const DownloadForm = styled.form`
     display: flex;
     flex-direction: column;
     wrap: no-wrap;

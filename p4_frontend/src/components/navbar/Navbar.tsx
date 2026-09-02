@@ -85,9 +85,13 @@ function Navbar(){
 
     return(
         <NavbarContainer>
-            {(authenticated && location.pathname !== "/home")  && <ButtonBurger id="btn-burger" onClick={handleClickBurger}>
-                <img src="./hamburger.svg" />
-            </ButtonBurger>}
+            { authenticated && 
+                location.pathname !== "/home" &&
+                !location.pathname.startsWith("/download") && (
+                <ButtonBurger id="btn-burger" onClick={handleClickBurger}>
+                    <img src="../hamburger.svg" />
+                </ButtonBurger>
+            )}
 
             {location.pathname === "/myspace" && <Sidebar $show={showSidebar}>
                 <SidebarBrand className="sidebar-brand" >

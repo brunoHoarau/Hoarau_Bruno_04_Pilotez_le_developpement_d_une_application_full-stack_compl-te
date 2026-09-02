@@ -130,7 +130,7 @@ export class FilesController {
   }
 
   @Get('download/:token')
-  getDownloadInfo(@Param('token') token: string) {
+  async getDownloadInfo(@Param('token') token: string) {
     return this.filesService.getDownloadInfo(token);
   }
 
@@ -143,32 +143,31 @@ export class FilesController {
     try{
 
       const file = await this.filesService.verifyDownload(token, password);
-      
+
       res.set({
         'Content-Type': file.mimetype,
         'Content-Disposition': `attachment; filename="${encodeURIComponent(file.originalName)}"`,
       });
-      
+
       const stream = fs.createReadStream(file.storagePath);
       
-      stream.on('error', () => {
-        if (!res.headersSent) {
-          res.status(404).json({ message: 'Fichier introuvable' });
-        }
-      });
       
       stream.pipe(res);
     } catch(error){
-        if (error instanceof HttpException) {
-        return res.status(error.getStatus()).json({
-          message: error.message,
-        });
-      }
-    }
+          console.error('================ DOWNLOAD ERROR ================');
+          console.error(error);
+          console.error('=================================================');
 
-    return res.status(500).json({
-      message: 'Une erreur est survenue lors du téléchargement',
-    })
+        if (error instanceof HttpException) {
+          return res.status(error.getStatus()).json({
+            message: error.message,
+          });
+        }
+        
+        return res.status(500).json({
+          message: 'Une erreur est survenue lors du téléchargement',
+        })
+    }
 
   }
 }

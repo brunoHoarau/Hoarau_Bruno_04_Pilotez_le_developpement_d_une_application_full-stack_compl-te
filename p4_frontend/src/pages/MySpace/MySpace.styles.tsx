@@ -55,17 +55,6 @@ export const MySpaceListEl = styled.div<{ disabled?: boolean }>`
         max-width: 60%;
         text-align: left;
 
-        
-        & .file-details-name{
-            font-weight: 600;
-            font-size: 16px;
-            line-height: 24px;
-            letter-spacing: 0%;
-            color: black;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-        }
 
         & .file-details{
             text-overflow: ellipsis;

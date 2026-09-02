@@ -84,15 +84,13 @@ export class FilesService {
       },
     });
   
-    console.log(files);
-
     return files.map((file) => ({
-
         id: file.id,
         size: file.size,
         originalName: file.originalName,
         mimetype: file.mimetype,
         token: file.token,
+        expiresAt: file.expiresAt,
         timeRemaining: getTimeRemaining(file.expiresAt),
         requiresPassword: !!file.passwordHash,
         physicalDeletedAt: file.physicalDeletedAt,
@@ -105,6 +103,7 @@ export class FilesService {
     const file = await this.fileRepository.findOne({
       where: { token },
     });
+    console.log(file);
 
     if (!file) {
       throw new NotFoundException('Fichier introuvable');
@@ -121,23 +120,21 @@ export class FilesService {
 
   async getDownloadInfo(token: string) {
     const file = await this.findOneByToken(token);
-    const now = Date.now();
-    const expiresAt = new Date(file.expiresAt).getTime()
-    const timeRemaining = Math.max(0, expiresAt - now);
+   
 
     return {
       originalName: file.originalName,
       mimetype: file.mimetype,
       size: file.size,
       expiresAt: file.expiresAt,
-      timeRemaining,
+      timeRemaining: getTimeRemaining(file.expiresAt),
       requiresPassword: !!file.passwordHash,
+      physicalDeletedAt: !!file.physicalDeletedAt,
     };
   }
 
   async verifyDownload(token: string, password?: string) {
     const file = await this.findOneByToken(token);
-
     if (!file) {
       throw new NotFoundException('Lien de téléchargement introuvable');
     }

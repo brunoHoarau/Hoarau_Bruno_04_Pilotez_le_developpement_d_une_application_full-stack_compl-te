@@ -67,7 +67,9 @@ function MySpace()  {
                 fileToken: file.token,
                 fileName: file.originalName,
                 fileSize: formaterTaille(file.size),
-
+                filePassword: file.requiresPassword,
+                fileTimeRemaining: file.timeRemaining,
+                fileExpiresAt: file.expiresAt
             },
         });
 
@@ -131,9 +133,6 @@ function MySpace()  {
                                 </div>
                                 <div className={!isOptionsOpen ? "dflex" : "dnone"} >
                                     {file.requiresPassword && <img src="./Lock.svg" />}
-                                    {/* {!file.physicalDeletedAt  && <div className="btn-icon-dot">
-                                        <img className="icon-dot" src="./3dot.svg" onClick={(e) => handleClickOption(e, file.id)} />
-                                    </div>}  */}
                                 </div>
                                 <div className="file-actions dflex">
                                     <div className={!isOptionsOpen ? "dflex" : "dnone"}>

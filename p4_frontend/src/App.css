@@ -71,7 +71,50 @@
 .dflex {
   display: flex;
 }
-
 .dnone{
   display: none;
+}
+
+.flex-d-c{
+  flex-direction: column;
+}
+
+.gap16{
+  gap: 16px;
+}
+
+.file-details-name{
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;
+    color: black;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.callout{
+  display: flex;
+  align-items: center;
+  width: stretch;
+  height: 32px;
+  gap: 8px;
+  opacity: 1;
+  border-width: 1px;
+  padding: 8px;
+  border-radius: 8px;
+}
+.info{
+  background-color: #E2ECFF;
+  border: 1px solid #B1C9F5;
+  color: #2A3F72;
+;
+}
+
+.alert{
+  background-color: #FFF5ED;
+  border: 1px solid #E6CBB5;
+  color: #AA642B;
+
 }
