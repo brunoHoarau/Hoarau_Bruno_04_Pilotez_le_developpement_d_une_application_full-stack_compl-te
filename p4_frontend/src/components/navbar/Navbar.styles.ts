@@ -2,13 +2,12 @@ import styled from "styled-components";
 
 
 export const NavbarContainer = styled.nav`
-    position: fixed;
+    position: relative;
     display: flex;
-    height: 72px;
     justify-content: space-between;
     align-items: center;
     align-self: center;
-    margin: 0 16px;
+    padding: 24px;
     width: stretch;
     max-width: 1280px;
 
@@ -20,7 +19,6 @@ export const NavbarContainer = styled.nav`
 
     & button{
         max-width: 125px;
-        height:40px;
         background-color: black;
         color: white;
         width: 123;

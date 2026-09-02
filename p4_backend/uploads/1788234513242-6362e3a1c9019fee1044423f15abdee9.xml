@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Invoice
+ xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+ xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+ xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+
+<!-- ===================== HEADER ===================== -->
+
+<cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+
+<cbc:CustomizationID>
+urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0
+</cbc:CustomizationID>
+
+<cbc:ProfileID>
+urn:fdc:peppol.eu:2017:poacc:billing:01:1.0
+</cbc:ProfileID>
+
+<cbc:ID>FAC-2026-000789</cbc:ID>
+<cbc:IssueDate>2026-06-11</cbc:IssueDate>
+<cbc:DueDate>2026-07-11</cbc:DueDate>
+
+<cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+<cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+
+<cbc:BuyerReference>DEPT-IT-2026</cbc:BuyerReference>
+
+<!-- ===================== REFERENCES ===================== -->
+
+<cac:OrderReference>
+  <cbc:ID>PO-2026-9911</cbc:ID>
+</cac:OrderReference>
+
+<cac:ContractDocumentReference>
+  <cbc:ID>CTR-ERP-2026</cbc:ID>
+</cac:ContractDocumentReference>
+
+<cac:ProjectReference>
+  <cbc:ID>PROJET-DIGITAL</cbc:ID>
+</cac:ProjectReference>
+
+<cac:InvoicePeriod>
+  <cbc:StartDate>2026-05-01</cbc:StartDate>
+  <cbc:EndDate>2026-05-31</cbc:EndDate>
+</cac:InvoicePeriod>
+
+<!-- ===================== SUPPLIER ===================== -->
+
+<cac:AccountingSupplierParty>
+<cac:Party>
+
+  <cac:PartyIdentification>
+    <cbc:ID schemeID="0002">12345678900012</cbc:ID>
+  </cac:PartyIdentification>
+
+  <cac:PartyName>
+    <cbc:Name>Alpha Digital Services SAS</cbc:Name>
+  </cac:PartyName>
+
+  <cac:PostalAddress>
+    <cbc:StreetName>10 Rue de la République</cbc:StreetName>
+    <cbc:CityName>Rouen</cbc:CityName>
+    <cbc:PostalZone>76000</cbc:PostalZone>
+    <cac:Country>
+      <cbc:IdentificationCode>FR</cbc:IdentificationCode>
+    </cac:Country>
+  </cac:PostalAddress>
+
+  <cac:PartyTaxScheme>
+    <cbc:CompanyID>FR12345678901</cbc:CompanyID>
+    <cac:TaxScheme>
+      <cbc:ID>VAT</cbc:ID>
+    </cac:TaxScheme>
+  </cac:PartyTaxScheme>
+
+  <cac:PartyLegalEntity>
+    <cbc:RegistrationName>Alpha Digital Services SAS</cbc:RegistrationName>
+    <cbc:CompanyID>123456789</cbc:CompanyID>
+  </cac:PartyLegalEntity>
+
+</cac:Party>
+</cac:AccountingSupplierParty>
+
+<!-- ===================== CUSTOMER ===================== -->
+
+<cac:AccountingCustomerParty>
+<cac:Party>
+
+  <cac:PartyIdentification>
+    <cbc:ID schemeID="0002">98765432100021</cbc:ID>
+  </cac:PartyIdentification>
+
+  <cac:PartyName>
+    <cbc:Name>Industrie Europe SA</cbc:Name>
+  </cac:PartyName>
+
+  <cac:PostalAddress>
+    <cbc:StreetName>50 Avenue des Champs</cbc:StreetName>
+    <cbc:CityName>Paris</cbc:CityName>
+    <cbc:PostalZone>75008</cbc:PostalZone>
+    <cac:Country>
+      <cbc:IdentificationCode>FR</cbc:IdentificationCode>
+    </cac:Country>
+  </cac:PostalAddress>
+
+  <cac:PartyTaxScheme>
+    <cbc:CompanyID>FR98765432109</cbc:CompanyID>
+    <cac:TaxScheme>
+      <cbc:ID>VAT</cbc:ID>
+    </cac:TaxScheme>
+  </cac:PartyTaxScheme>
+
+</cac:Party>
+</cac:AccountingCustomerParty>
+
+<!-- ===================== PAYMENT ===================== -->
+
+<cac:PaymentMeans>
+  <cbc:PaymentMeansCode>30</cbc:PaymentMeansCode>
+
+  <cac:PayeeFinancialAccount>
+    <cbc:ID>FR7612345678901234567890123</cbc:ID>
+    <cac:FinancialInstitutionBranch>
+      <cbc:ID>AGRIFRPP</cbc:ID>
+    </cac:FinancialInstitutionBranch>
+  </cac:PayeeFinancialAccount>
+</cac:PaymentMeans>
+
+<cac:PaymentTerms>
+  <cbc:Note>Paiement à 30 jours fin de mois</cbc:Note>
+</cac:PaymentTerms>
+
+<!-- ===================== CHARGES ===================== -->
+
+<cac:AllowanceCharge>
+  <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+  <cbc:AllowanceChargeReason>Remise commerciale</cbc:AllowanceChargeReason>
+  <cbc:Amount currencyID="EUR">100.00</cbc:Amount>
+</cac:AllowanceCharge>
+
+<cac:AllowanceCharge>
+  <cbc:ChargeIndicator>true</cbc:ChargeIndicator>
+  <cbc:AllowanceChargeReason>Frais de livraison</cbc:AllowanceChargeReason>
+  <cbc:Amount currencyID="EUR">50.00</cbc:Amount>
+</cac:AllowanceCharge>
+
+<cac:Delivery>
+  <cbc:ActualDeliveryDate>2026-05-31</cbc:ActualDeliveryDate>
+</cac:Delivery>
+
+<!-- ===================== LIGNES ===================== -->
+
+<!-- TVA 20% -->
+<cac:InvoiceLine>
+  <cbc:ID>1</cbc:ID>
+  <cbc:InvoicedQuantity unitCode="HUR">10</cbc:InvoicedQuantity>
+  <cbc:LineExtensionAmount currencyID="EUR">1000.00</cbc:LineExtensionAmount>
+
+  <cac:Item>
+    <cbc:Name>Développement logiciel</cbc:Name>
+    <cac:ClassifiedTaxCategory>
+      <cbc:ID>S</cbc:ID>
+      <cbc:Percent>20</cbc:Percent>
+      <cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme>
+    </cac:ClassifiedTaxCategory>
+  </cac:Item>
+
+  <cac:Price>
+    <cbc:PriceAmount currencyID="EUR">100.00</cbc:PriceAmount>
+  </cac:Price>
+</cac:InvoiceLine>
+
+<cac:InvoiceLine>
+  <cbc:ID>2</cbc:ID>
+  <cbc:InvoicedQuantity unitCode="EA">2</cbc:InvoicedQuantity>
+  <cbc:LineExtensionAmount currencyID="EUR">400.00</cbc:LineExtensionAmount>
+
+  <cac:Item>
+    <cbc:Name>Formation utilisateurs</cbc:Name>
+    <cac:ClassifiedTaxCategory>
+      <cbc:ID>S</cbc:ID>
+      <cbc:Percent>20</cbc:Percent>
+      <cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme>
+    </cac:ClassifiedTaxCategory>
+  </cac:Item>
+
+  <cac:Price>
+    <cbc:PriceAmount currencyID="EUR">200.00</cbc:PriceAmount>
+  </cac:Price>
+</cac:InvoiceLine>
+
+<!-- TVA 5.5% -->
+<cac:InvoiceLine>
+  <cbc:ID>3</cbc:ID>
+  <cbc:InvoicedQuantity unitCode="EA">10</cbc:InvoicedQuantity>
+  <cbc:LineExtensionAmount currencyID="EUR">500.00</cbc:LineExtensionAmount>
+
+  <cac:Item>
+    <cbc:Name>Documentation technique</cbc:Name>
+    <cac:ClassifiedTaxCategory>
+      <cbc:ID>S</cbc:ID>
+      <cbc:Percent>5.5</cbc:Percent>
+      <cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme>
+    </cac:ClassifiedTaxCategory>
+  </cac:Item>
+
+  <cac:Price>
+    <cbc:PriceAmount currencyID="EUR">50.00</cbc:PriceAmount>
+  </cac:Price>
+</cac:InvoiceLine>
+
+<!-- ===================== TVA ===================== -->
+
+<cac:TaxTotal>
+  <cbc:TaxAmount currencyID="EUR">305.00</cbc:TaxAmount>
+
+  <cac:TaxSubtotal>
+    <cbc:TaxableAmount currencyID="EUR">1400.00</cbc:TaxableAmount>
+    <cbc:TaxAmount currencyID="EUR">280.00</cbc:TaxAmount>
+    <cac:TaxCategory>
+      <cbc:ID>S</cbc:ID>
+      <cbc:Percent>20</cbc:Percent>
+      <cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme>
+    </cac:TaxCategory>
+  </cac:TaxSubtotal>
+
+  <cac:TaxSubtotal>
+    <cbc:TaxableAmount currencyID="EUR">500.00</cbc:TaxableAmount>
+    <cbc:TaxAmount currencyID="EUR">25.00</cbc:TaxAmount>
+    <cac:TaxCategory>
+      <cbc:ID>S</cbc:ID>
+      <cbc:Percent>5.5</cbc:Percent>
+      <cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme>
+    </cac:TaxCategory>
+  </cac:TaxSubtotal>
+
+</cac:TaxTotal>
+
+<!-- ===================== TOTALS ===================== -->
+
+<cac:LegalMonetaryTotal>
+  <cbc:LineExtensionAmount currencyID="EUR">1900.00</cbc:LineExtensionAmount>
+  <cbc:AllowanceTotalAmount currencyID="EUR">100.00</cbc:AllowanceTotalAmount>
+  <cbc:ChargeTotalAmount currencyID="EUR">50.00</cbc:ChargeTotalAmount>
+  <cbc:TaxExclusiveAmount currencyID="EUR">1850.00</cbc:TaxExclusiveAmount>
+  <cbc:TaxInclusiveAmount currencyID="EUR">2155.00</cbc:TaxInclusiveAmount>
+  <cbc:PayableAmount currencyID="EUR">2155.00</cbc:PayableAmount>
+</cac:LegalMonetaryTotal>
+
+</Invoice>

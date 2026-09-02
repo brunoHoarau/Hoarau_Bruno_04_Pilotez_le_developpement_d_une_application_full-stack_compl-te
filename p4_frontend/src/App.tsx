@@ -8,6 +8,7 @@ import MySpace from './pages/MySpace/MySpace'
 import GuestRoute from './routes/GuestRoute'
 import PrivateRoute from './routes/PrivateRoute'
 import Upload from './pages/Upload/Upload'
+import Download from './pages/Download/Download'
 
 function App() {
 
@@ -26,6 +27,9 @@ function App() {
                 <Route path='/myspace' element={ <MySpace /> } />
                 <Route path='/upload' element={ <Upload /> } />
             </Route>
+
+            <Route path='/download/' element={ <Download /> } />
+            <Route path='/download/:token' element={ <Download /> } />
         </Routes>
     </>
   )

@@ -2,11 +2,15 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export async function uploadFile (
     file: File,
-    expirationDays: string
+    expirationDays: string,
+    password?: string,
 ) {
     const formData = new FormData();
 
   formData.append("file", file);
+  if(password){
+    formData.append("password", password);
+  }
   formData.append("expirationDays", expirationDays);
 
   const response = await fetch(`${API_URL}/files/upload`, {

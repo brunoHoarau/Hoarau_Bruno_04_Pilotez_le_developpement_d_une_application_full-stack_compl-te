@@ -15,8 +15,12 @@ function Navbar(){
 
     useEffect(() => {
         const check = async () => {
-            const result = await checkAuth();
-            console.log("checkAuth resut: ", result)
+            try{
+                const result = await checkAuth();
+                console.log("checkAuth resut: ", result)
+            } catch(error){
+                console.log(error)
+            }
             
         };
 
@@ -85,7 +89,7 @@ function Navbar(){
                 <img src="./hamburger.svg" />
             </ButtonBurger>}
 
-            {location.pathname !== "/home"  && <Sidebar $show={showSidebar}>
+            {location.pathname === "/myspace" && <Sidebar $show={showSidebar}>
                 <SidebarBrand className="sidebar-brand" >
                     <img src="./cross.svg" alt="X" onClick={handleCloseBurger} />
                     <Link to={"/home"} onClick={() => setShowsidebar(false)}>

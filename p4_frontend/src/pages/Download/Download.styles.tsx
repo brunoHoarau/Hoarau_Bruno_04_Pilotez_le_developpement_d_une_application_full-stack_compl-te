@@ -1,0 +1,24 @@
+import styled from "styled-components";
+
+
+export const DownloadContainer = styled.div`
+    display: flex;
+    height: stretch;
+    justify-content: center;
+    align-items: center;
+    margin: 0 24px;
+`;
+
+export const ContainerBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    wrap: no-wrap;
+    background-color: white;
+    width: stretch;
+    height: 368px;
+    border-radius: 16px;
+    gap: 24px;
+    padding: 24px;
+    padding: 24px;
+
+`;

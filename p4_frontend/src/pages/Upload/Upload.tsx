@@ -5,6 +5,7 @@ import Input from "../../components/Input/Input";
 import Select from "../../components/Select/Select";
 import { UploadForm, UploadField } from "./Upload.styles";
 import { uploadFile } from "../../api/UploadFunction";
+import { formaterTaille } from "../../utils/files.utils";
 
 function Upload () {
     const [valid,setValid] = useState(false)
@@ -27,11 +28,6 @@ function Upload () {
         { value: '7', label: 'Sept journées'},
     ];
 
-    function formaterTaille(octets: number) {
-        if (octets >= 1e9) return (octets / 1e9).toFixed(2) + ' Go';
-        if (octets >= 1e6) return (octets / 1e6).toFixed(2) + ' Mo';
-        return octets + ' octets';
-    }
     const validUploadForm = () =>{
          const newErrors: typeof errors = {};
 
@@ -110,10 +106,13 @@ function Upload () {
             e.target.value = "";
             return
         }
-
-        
-
     }
+
+    const handleSelectExpirationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        // e.preventDefault();
+        setExpirationDays(e.target.value)
+    }
+    
 
     const handlePassOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value);
@@ -139,6 +138,7 @@ function Upload () {
             result = await uploadFile(
             file,
             expirationDays.toString(),
+            password,
             );
 
             console.log("Upload réussi :", result);
@@ -176,7 +176,7 @@ function Upload () {
                     { errors.file && <div><span className="error">{errors.file}</span></div>}
             </UploadField>
             {!valid &&<Input label="Mot de passe" placeHolder="Optionnel" classCss="orange" onChange={handlePassOnchange} error={errors.password}/> }
-            {!valid &&<Select label="Expiration"  options={options} defaultselected={expirationDays}/> }
+            {!valid &&<Select label="Expiration" value={expirationDays}  options={options} defaultselected={expirationDays} onChange={handleSelectExpirationChange}/> }
             <Button 
                 id="btn-submit-upload" 
                 className={ errors.file || errors.password || valid ? "btn-disabled": ""} 

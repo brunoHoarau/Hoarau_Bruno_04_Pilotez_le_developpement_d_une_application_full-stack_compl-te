@@ -49,3 +49,29 @@
   height: inherit;
   max-height: 21px;
 }
+
+.btn-icon-dot, .btn-icon{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #FFA569;
+  gap: 8;
+  padding: 8px;
+  margin: 8px;
+}
+
+.icon-dot{
+  height: 16px;
+  width: 16px;
+}
+
+.dflex {
+  display: flex;
+}
+
+.dnone{
+  display: none;
+}

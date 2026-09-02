@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { randomBytes } from 'crypto';
 import * as bcrypt from 'bcrypt';
 import * as fs from 'fs/promises';
+import { getTimeRemaining } from '../../common/utils/times.utils';
 
 const MIN_PASSWORD_LENGTH = 6;
 
@@ -21,10 +22,11 @@ export class FilesService {
         expirationDays = 7,
         password?: string,
     ) {
+      
         if (
             !Number.isInteger(expirationDays) ||
-            expirationDays < 1 ||
-            expirationDays > 7
+            expirationDays <= 1 ||
+            expirationDays >= 7
         ) {
             throw new BadRequestException(
             'La durée doit être comprise entre 1 et 7 jours.',
@@ -81,16 +83,22 @@ export class FilesService {
         createdAt: 'DESC',
       },
     });
+  
+    console.log(files);
 
     return files.map((file) => ({
-      id: file.id,
-      originalName: file.originalName,
-      mimetype: file.mimetype,
-      token: file.token,
-      expiresAt: file.expiresAt,
-      requiresPassword: !!file.passwordHash,
-      physicalDeletedAt: file.physicalDeletedAt,
-    }));
+
+        id: file.id,
+        size: file.size,
+        originalName: file.originalName,
+        mimetype: file.mimetype,
+        token: file.token,
+        timeRemaining: getTimeRemaining(file.expiresAt),
+        requiresPassword: !!file.passwordHash,
+        physicalDeletedAt: file.physicalDeletedAt,
+      })
+      
+    );
   }
 
   async findOneByToken(token: string) {
@@ -113,12 +121,16 @@ export class FilesService {
 
   async getDownloadInfo(token: string) {
     const file = await this.findOneByToken(token);
+    const now = Date.now();
+    const expiresAt = new Date(file.expiresAt).getTime()
+    const timeRemaining = Math.max(0, expiresAt - now);
 
     return {
       originalName: file.originalName,
       mimetype: file.mimetype,
       size: file.size,
       expiresAt: file.expiresAt,
+      timeRemaining,
       requiresPassword: !!file.passwordHash,
     };
   }
