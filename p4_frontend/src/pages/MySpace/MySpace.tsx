@@ -4,6 +4,7 @@ import { MySpaceContainer, MySpaceList, MySpaceHeader, MySpaceNav, MySpaceListEl
 import { Link, useNavigate } from "react-router-dom";
 import { formaterTaille} from "../../utils/files.utils";
 import Switch from "../../components/switch/Switch";
+import { deleteFile } from "../../api/DeleteFile";
 
 interface UserFile {
     id: string;
@@ -74,7 +75,33 @@ function MySpace()  {
         });
 
         setOptions(null);
-};
+    };
+
+    const handleDelete =  async(
+        e: React.MouseEvent<HTMLDivElement>,
+        token: string
+    ) =>{
+        e.preventDefault();
+        e.stopPropagation();
+
+        const confirmed = window.confirm(
+            "Êtes-vous sûr de vouloir supprimer définitivement ce fichier ? Cette action est irréversible."
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            await deleteFile(token);
+
+            setData((currentData) =>
+                currentData.filter((file) => file.token !== token)
+            );
+            } catch (error: any) {
+                console.error(error.message);
+            }
+        }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -147,7 +174,11 @@ function MySpace()  {
                                         )}
                                     </div>
 
-                                    <ListBtns  className={isOptionsOpen ? "dflex" : "dnone"} $options={isOptionsOpen}>
+                                    <ListBtns  
+                                        className={isOptionsOpen ? "dflex" : "dnone"} 
+                                        $options={isOptionsOpen}
+                                        onClick={(e) => handleDelete(e, file.token)}
+                                    >
                                         <div className="btn-icon">
                                             <img className="img-delete" src="./Trash.svg" />
                                             <div className="txt-delete">Supprimer</div>
@@ -167,6 +198,7 @@ function MySpace()  {
                     })
                 }
             </MySpaceList>
+
         </MySpaceContainer>
     )
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, GoneException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, GoneException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileEntity } from '../../database/entities/file.entity';
 import { Repository } from 'typeorm';
@@ -133,33 +133,33 @@ export class FilesService {
     };
   }
 
-  async verifyDownload(token: string, password?: string) {
-    const file = await this.findOneByToken(token);
-    if (!file) {
-      throw new NotFoundException('Lien de téléchargement introuvable');
-    }
-
-    if (file.expiresAt && file.expiresAt < new Date()) {
-      throw new ForbiddenException('Le lien de téléchargement a expiré');
-    }
-
-    if (file.passwordHash) {
-      if (!password) {
-        throw new UnauthorizedException('Mot de passe requis');
+    async verifyDownload(token: string, password?: string) {
+      const file = await this.findOneByToken(token);
+      if (!file) {
+        throw new NotFoundException('Lien de téléchargement introuvable');
       }
 
-      const isPasswordValid = await bcrypt.compare(
-        password,
-        file.passwordHash,
-      );
-
-      if (!isPasswordValid) {
-        throw new UnauthorizedException('Mot de passe invalide');
+      if (file.expiresAt && file.expiresAt < new Date()) {
+        throw new ForbiddenException('Le lien de téléchargement a expiré');
       }
-    }
 
-    return file;
-  }
+      if (file.passwordHash) {
+        if (!password) {
+          throw new UnauthorizedException('Mot de passe requis');
+        }
+
+        const isPasswordValid = await bcrypt.compare(
+          password,
+          file.passwordHash,
+        );
+
+        if (!isPasswordValid) {
+          throw new UnauthorizedException('Mot de passe invalide');
+        }
+      }
+
+      return file;
+    }
 
     async deleteExpiredPhysicalFiles() {
         const now = new Date();
@@ -199,5 +199,43 @@ export class FilesService {
             }
             }
         }
+    }
+
+    async deleteFile(token: string, userId: number) {
+      const file = await this.fileRepository.findOne({
+        where: {
+          token,
+          userId,
+        },
+      });
+
+      if (!file) {
+        throw new NotFoundException('Fichier introuvable');
+      }
+
+      try {
+        await fs.unlink(file.storagePath);
+
+        console.log(`Fichier physique supprimé : ${file.storagePath}`);
+      } catch (error: any) {
+        if (error.code === 'ENOENT') {
+          throw new InternalServerErrorException(
+            'Impossible de supprimer le fichier',
+          );
+        } 
+      }
+
+      // Suppression définitive des métadonnées
+      try {
+        await this.fileRepository.remove(file);
+      } catch (error) {
+        throw new InternalServerErrorException(
+          'Impossible de supprimer les métadonnées du fichier',
+        );
+      }
+
+      return {
+        message: 'Fichier supprimé définitivement',
+      };
     }
 }

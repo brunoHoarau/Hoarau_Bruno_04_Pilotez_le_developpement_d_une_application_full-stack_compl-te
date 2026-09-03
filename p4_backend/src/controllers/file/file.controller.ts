@@ -13,6 +13,7 @@ import {
   Body,
   BadRequestException,
   HttpException,
+  Delete,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { Response } from 'express';
@@ -154,9 +155,6 @@ export class FilesController {
       
       stream.pipe(res);
     } catch(error){
-          console.error('================ DOWNLOAD ERROR ================');
-          console.error(error);
-          console.error('=================================================');
 
         if (error instanceof HttpException) {
           return res.status(error.getStatus()).json({
@@ -169,5 +167,17 @@ export class FilesController {
         })
     }
 
+  }
+
+  @Delete('delete')
+  @UseGuards(JwtAuthGuard)
+  async deleteFile(
+    @Body('token') token: string,
+    @Req() req: any,
+  ) {
+    return this.filesService.deleteFile(
+      token,
+      req.user.userId,
+    );
   }
 }

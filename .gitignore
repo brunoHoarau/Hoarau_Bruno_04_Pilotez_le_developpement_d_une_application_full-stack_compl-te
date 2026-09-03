@@ -9,6 +9,7 @@ p4_backend/.env
 p4_backend/.claude
 p4_backend/docs/
 p4_backend/docs/
+p4_backend/uploads/
 
 p4_frontend/node_modules
 p4_frontend/.prettierrc
