@@ -147,7 +147,7 @@ function MySpace()  {
                                         )}
                                     </div>
 
-                                    <ListBtns $options={isOptionsOpen}>
+                                    <ListBtns  className={isOptionsOpen ? "dflex" : "dnone"} $options={isOptionsOpen}>
                                         <div className="btn-icon">
                                             <img className="img-delete" src="./Trash.svg" />
                                             <div className="txt-delete">Supprimer</div>

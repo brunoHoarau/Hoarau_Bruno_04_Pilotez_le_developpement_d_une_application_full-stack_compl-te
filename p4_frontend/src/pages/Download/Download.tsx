@@ -21,6 +21,7 @@ function Download() {
     const { token } = useParams();
     const location = useLocation();
     const [password, setPassword] = useState('')
+    const [errPassword, setErrPassword] = useState('')
     const [ calloutMsg, setCalloutMsg] = useState('')
     const [valid, setValid] = useState(false)
     const { 
@@ -42,10 +43,21 @@ function Download() {
         expiresAt: initialExpiresAt
     });
 
-    const [errors, setErrors] = useState<{
+    const [errors, setErrors] = useState<({
         file?: string;
         password?: string;
-    }>({});
+    })>({});
+
+    const validPassword = () => {
+        setErrPassword("")
+        if(password.length > 0 && password.length  < 6 ){
+            setErrPassword("Le mot de passe doit faire au minimum 6 caractères")
+            return;
+        }
+        
+        return !!errPassword;
+
+    }
 
     const handlePassOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value);
@@ -53,9 +65,14 @@ function Download() {
     }
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) =>{
+        e.preventDefault();
+        if(validPassword()){
+            console.log(!!validPassword())
+            return;
+        };
+
         const form = e.currentTarget;
         const btn = form.querySelector("#btn-submit-download");
-        e.preventDefault();
         let result= {};
 
          if (!file.token) {
@@ -80,8 +97,9 @@ function Download() {
 
             window.URL.revokeObjectURL(url);
 
-        } catch (error) {
-            return;
+        } catch (error: any) {
+                setErrPassword(error.message);
+                return;
         }
 
         if( result! === 200 ){
@@ -130,7 +148,7 @@ function Download() {
                     <h2>Telecharger un fichier</h2>
                 </div>
                 
-                {file.timeRemaining && <div className="dflex gap16">
+                {file.timeRemaining && <div className="dflex gap16 align-i-c">
                     <div>
                         <img src="../Picture.svg" alt="img description" />
                     </div>
@@ -140,10 +158,10 @@ function Download() {
                     </div>
                 </div>
                 }
-                {file.timeRemaining && <Callout timeRemaining={file.timeRemaining} expiresAt={file.expiresAt ?? null} /> }
+                {(file.timeRemaining || calloutMsg) && <Callout expiresAt={file.expiresAt ?? null} /> }
                 {file.password && 
                 <div>
-                    <Input label="Mot de passe" placeHolder="Optionnel" classCss="orange" onChange={handlePassOnchange} error={errors.password}/>
+                    <Input label="Mot de passe" placeHolder="Optionnel" classCss="orange" onChange={handlePassOnchange} error={errPassword}/>
                 </div>
                 }
                 {file.timeRemaining && <Button 

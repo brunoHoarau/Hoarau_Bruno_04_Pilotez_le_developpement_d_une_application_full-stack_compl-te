@@ -65,22 +65,18 @@ export const MySpaceListEl = styled.div<{ disabled?: boolean }>`
 `;
 
 export const ListBtns = styled.div<{ $options: boolean}>`
-
-    display: flex;
-
-    width: ${({ $options }) => ($options ? "stretch" : "0px")};
     opacity: ${({ $options }) => ($options ? 1 : 0)};
     visibility: ${({ $options }) => ($options ? "visible" : "hidden")};
     transform: ${({ $options }) =>
-        $options ? "translateX(0)" : "translateX(10px)"};
+        $options ? "translateX(0)" : "translateX(20px)"};
 
     transition:
-        opacity 0.2s ease,
-        transform 0.2s ease,
-        visibility 0.2s ease;
+        opacity 0.5s ease,
+        transform 0.5s ease,
+        visibility 0s linear ${({ $options }) => ($options ? "0s" : "0.5s")};
 
     pointer-events: ${({ $options }) =>
-        $options ? "auto" : "none"};
+         $options ? "auto" : "none"};
 
 
     @media (max-width: 992px) {

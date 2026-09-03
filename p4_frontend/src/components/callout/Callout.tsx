@@ -2,10 +2,9 @@ import { use, useEffect, useState } from "react";
 import { CalloutContainer } from "./Callout.styles";
 
 interface CalloutProps {
-    timeRemaining?: string | number;
     expiresAt?: string | null ;
 }
-function Callout({timeRemaining, expiresAt}: CalloutProps ){
+function Callout({expiresAt}: CalloutProps ){
 
     console.log(expiresAt);
     const now = Date.now();
@@ -57,7 +56,7 @@ function Callout({timeRemaining, expiresAt}: CalloutProps ){
         if (mn > 0) {
             return (
                 <>
-                    <img src="/Alert-octogon.svg" />
+                    <img src="/Alert-octagon.svg" />
                     <div>
                         Ce fichier expirera dans {mn} minute{mn > 1 ? "s" : ""}.
                     </div>
@@ -67,7 +66,7 @@ function Callout({timeRemaining, expiresAt}: CalloutProps ){
 
         return (
             <>
-                <img src="../public/Alert-octogon.svg" />
+                <img src="/Alert-octagon.svg" />
                 <div>
                     Ce fichier n'est plus disponible en téléchargement
                     car il a expiré.
@@ -84,7 +83,7 @@ function Callout({timeRemaining, expiresAt}: CalloutProps ){
             : "danger";
 
     return(
-        <CalloutContainer className={"callout "+classCss}>
+        <CalloutContainer className={"callout "+ classCss}>
             <CalloutContains />
         </CalloutContainer>
     )

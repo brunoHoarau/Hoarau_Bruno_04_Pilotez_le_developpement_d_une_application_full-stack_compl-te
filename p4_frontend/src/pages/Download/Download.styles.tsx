@@ -15,7 +15,6 @@ export const DownloadForm = styled.form`
     wrap: no-wrap;
     background-color: white;
     width: stretch;
-    height: 368px;
     border-radius: 16px;
     gap: 24px;
     padding: 24px;
